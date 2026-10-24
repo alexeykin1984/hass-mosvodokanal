@@ -1,0 +1,13 @@
+{
+  "domain": "mosvodokanal",
+  "name": "Мосводоканал",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/alexeykin1984/hass-mosvodokanal",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/alexeykin1984/hass-mosvodokanal/issues",
+  "requirements": [],
+  "version": "0.3.0"
+}

@@ -1,0 +1,18 @@
+send_readings:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: mosvodokanal
+    contract:
+      example: "90227871"
+      selector:
+        text:
+    dry_run:
+      default: false
+      selector:
+        boolean:
+    readings:
+      example: '{"210418891": 152.2, "210363908": 303.7}'
+      selector:
+        object:

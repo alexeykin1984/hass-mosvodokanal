@@ -1,0 +1,192 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mosvodokanal account",
+        "description": "Personal account at onewind.mosvodokanal.ru. All contracts of the account are added, including terminated ones.",
+        "data": {
+          "username": "Phone or e-mail",
+          "password": "Password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate",
+        "description": "Stored credentials were rejected, enter the password again.",
+        "data": {
+          "username": "Phone or e-mail",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid login or password",
+      "captcha": "The site requires a captcha: log in once in a browser and retry",
+      "cannot_connect": "Failed to connect"
+    },
+    "abort": {
+      "already_configured": "This account is already configured",
+      "reauth_successful": "Re-authentication successful",
+      "no_contracts": "No contracts in the account"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Reading sources",
+        "description": "Pick a Home Assistant sensor for each meter of active contracts (field: contract_serial). Values are floored to whole m³.\\n\\n{meters}"
+      }
+    },
+    "abort": {
+      "no_active_contracts": "No active contracts"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "readings_status": {
+        "name": "Readings",
+        "state": {
+          "sent": "Sent",
+          "pending": "Waiting",
+          "closed": "Closed",
+          "terminated": "Terminated"
+        },
+        "state_attributes": {
+          "period_start": {
+            "name": "Period start"
+          },
+          "period_end": {
+            "name": "Period end"
+          },
+          "period_date": {
+            "name": "Reading date"
+          },
+          "last_sent_period": {
+            "name": "Last sent period"
+          },
+          "last_sent_at": {
+            "name": "Sent at"
+          },
+          "prebill_status": {
+            "name": "Billing status"
+          },
+          "address": {
+            "name": "Address"
+          }
+        }
+      },
+      "balance": {
+        "name": "Balance"
+      },
+      "debt": {
+        "name": "Debt"
+      },
+      "last_bill": {
+        "name": "Last bill"
+      },
+      "period_end": {
+        "name": "Submission until"
+      },
+      "last_sent_period": {
+        "name": "Last submission"
+      },
+      "next_check": {
+        "name": "Next verification"
+      },
+      "meter": {
+        "name": "Meter {serial} ({water})"
+      },
+      "holder": {
+        "name": "Contract holder",
+        "state_attributes": {
+          "contract_date": {
+            "name": "Contract date"
+          },
+          "contract_state": {
+            "name": "State"
+          },
+          "contract_type": {
+            "name": "Contract type"
+          },
+          "contract_since": {
+            "name": "Valid since"
+          },
+          "address": {
+            "name": "Address"
+          },
+          "object_type": {
+            "name": "Object"
+          },
+          "flat": {
+            "name": "Flat"
+          },
+          "area": {
+            "name": "Area, m²"
+          },
+          "residents": {
+            "name": "Residents"
+          },
+          "owners": {
+            "name": "Owners"
+          },
+          "delivery": {
+            "name": "Bill delivery"
+          },
+          "social_benefits": {
+            "name": "Benefits"
+          }
+        }
+      },
+      "tariff_supply": {
+        "name": "Water supply tariff",
+        "state_attributes": {
+          "basis": {
+            "name": "Basis"
+          }
+        }
+      },
+      "tariff_drainage": {
+        "name": "Drainage tariff",
+        "state_attributes": {
+          "basis": {
+            "name": "Basis"
+          }
+        }
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Refresh"
+      },
+      "check": {
+        "name": "Check readings"
+      },
+      "send": {
+        "name": "Send readings"
+      }
+    }
+  },
+  "services": {
+    "send_readings": {
+      "name": "Send readings",
+      "description": "Sends readings of all contract meters to Mosvodokanal.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Account",
+          "description": "Account entry; required if several are configured."
+        },
+        "dry_run": {
+          "name": "Dry run",
+          "description": "Validate only, do not send."
+        },
+        "readings": {
+          "name": "Readings",
+          "description": "Serial → m³. If omitted, taken from the sensors chosen in the integration options."
+        },
+        "contract": {
+          "name": "Contract",
+          "description": "Contract number; optional if there is a single active contract."
+        }
+      }
+    }
+  }
+}
