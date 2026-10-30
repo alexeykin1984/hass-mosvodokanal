@@ -17,6 +17,7 @@ import aiohttp
 
 BASE_URL = "https://onewind.mosvodokanal.ru/"
 API_URL = BASE_URL + "api/"
+REQUEST_TIMEOUT = 180  # секунд на один запрос
 
 # Сайт не отдаёт промежуточный сертификат GlobalSign GCC R3 DV TLS CA 2020 — кладём его рядом.
 INTERMEDIATE_CERT = Path(__file__).with_name("gsgccr3dvtlsca2020.pem")
@@ -78,7 +79,8 @@ class MvkClient:
         connector = aiohttp.TCPConnector(family=socket.AF_INET, ssl=self._ssl)
         self._session = aiohttp.ClientSession(
             connector=connector,
-            timeout=aiohttp.ClientTimeout(total=60),
+            # в конце периода приёма отчёты кабинета отвечают по 30–60 с и дольше
+            timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
             headers={
                 "X-Requested-With": "XMLHttpRequest",
                 # фронтенд шлёт со всеми запросами случайный UUID
@@ -110,6 +112,8 @@ class MvkClient:
                 if resp.status >= 400:
                     raise MvkError(f"{command}: HTTP {resp.status}")
                 return await self._decode(resp)
+        except TimeoutError as err:
+            raise MvkError(f"{command}: сайт не ответил за {REQUEST_TIMEOUT} с") from err
         except aiohttp.ClientError as err:
             raise MvkError(f"{command}: {err}") from err
 
@@ -118,8 +122,8 @@ class MvkClient:
         try:
             async with session.get(BASE_URL) as resp:  # cookie сессии, как в браузере
                 await resp.read()
-        except aiohttp.ClientError as err:
-            raise MvkError(f"сайт недоступен: {err}") from err
+        except (aiohttp.ClientError, TimeoutError) as err:
+            raise MvkError(f"сайт недоступен: {err or 'таймаут'}") from err
         res = await self._call("login", {"username": self._login, "password": self._password,
                                          "captcha": ""})
         if isinstance(res, dict) and res.get("authenticated") is True:

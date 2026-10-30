@@ -10,6 +10,7 @@ CONF_ACCOUNT_ID = "account_id"
 CONF_ADDRESS = "address"
 
 UPDATE_INTERVAL = timedelta(hours=6)
+RETRY_INTERVAL = timedelta(minutes=15)  # повтор после неудачного опроса
 
 SERVICE_SEND = "send_readings"
 ATTR_DRY_RUN = "dry_run"

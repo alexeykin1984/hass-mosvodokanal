@@ -12,7 +12,7 @@ from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import MvkAuthError, MvkClient, MvkError, build_ssl_context
-from .const import CONF_SOURCES, DOMAIN, UPDATE_INTERVAL, WATER_NAMES
+from .const import CONF_SOURCES, DOMAIN, RETRY_INTERVAL, UPDATE_INTERVAL, WATER_NAMES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,6 +42,13 @@ class MvkCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
             await self._client.close()
 
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
+        # сбой → повтор через RETRY_INTERVAL, а не через 6 часов
+        self.update_interval = RETRY_INTERVAL
+        data = await self._fetch()
+        self.update_interval = UPDATE_INTERVAL
+        return data
+
+    async def _fetch(self) -> dict[str, dict[str, Any]]:
         client = await self._get_client()
         try:
             await client.login()
